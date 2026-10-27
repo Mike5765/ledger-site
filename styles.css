@@ -1,0 +1,277 @@
+/*
+ * Ledger's black glass look, for the public pages: the same page color,
+ * frosted cards, specular rim, and muted warm/cool background as the app.
+ * Static on purpose: no scripts, no animation.
+ */
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/fonts/plus-jakarta-sans.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #050506;
+  --fg: #f5f5f5;
+  --muted: #a3a3a3;
+  --soft: #d4d4d4;
+  --card: rgba(255, 255, 255, 0.06);
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
+  --edge-top: rgba(255, 255, 255, 0.16);
+  --edge-bottom: rgba(0, 0, 0, 0.45);
+  --line: rgba(255, 255, 255, 0.08);
+  --primary-bg: #fafafa;
+  --primary-fg: #0a0a0a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--fg);
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Soft, blurred warm and cool shapes for the glass to frost. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.backdrop span {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.backdrop span:nth-child(1) { width: 560px; height: 560px; top: -160px; left: -120px; background: #a0806a; opacity: 0.2; filter: blur(110px); }
+.backdrop span:nth-child(2) { width: 620px; height: 620px; top: 320px; right: -180px; background: #6a84a0; opacity: 0.2; filter: blur(130px); }
+.backdrop span:nth-child(3) { width: 480px; height: 480px; bottom: 120px; left: 22%; background: #7e7299; opacity: 0.17; filter: blur(120px); }
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+
+header.site {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--fg);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.brand .mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--primary-bg);
+  color: var(--primary-fg);
+  font-weight: 800;
+}
+
+nav.site {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+nav.site a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+nav.site a:hover {
+  color: var(--fg);
+}
+
+nav.site a[aria-current="page"] {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* The glass card: frosted fill, lit top edge, shaded bottom edge, and a
+   gradient rim brightest at the top-left. */
+.glass {
+  position: relative;
+  isolation: isolate;
+  background: var(--card);
+  -webkit-backdrop-filter: blur(36px) saturate(180%);
+  backdrop-filter: blur(36px) saturate(180%);
+  border-radius: 22px;
+  box-shadow: var(--shadow), inset 0 1px 0 var(--edge-top), inset 0 -1px 0 var(--edge-bottom);
+  padding: 28px;
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.16) 28%, rgba(255, 255, 255, 0.05) 62%, rgba(255, 255, 255, 0.14));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 33%);
+  pointer-events: none;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  margin: 32px 0 8px;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+h2:first-of-type {
+  margin-top: 24px;
+}
+
+p,
+li {
+  color: var(--soft);
+}
+
+.lede {
+  font-size: 18px;
+  color: var(--soft);
+  margin: 0;
+}
+
+.meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+ul {
+  padding-left: 1.2em;
+}
+
+li + li {
+  margin-top: 6px;
+}
+
+a {
+  color: var(--fg);
+  text-underline-offset: 3px;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: var(--primary-bg);
+  color: var(--primary-fg);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.button.ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg);
+  box-shadow: inset 0 1px 0 var(--edge-top), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+footer.site {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+footer.site a {
+  color: var(--muted);
+}
+
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .glass {
+    padding: 22px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+}
